@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070913">
+<title>STAR//RUNNER — Neon Drift</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+:root{color-scheme:dark;--ink:#f4f4ff;--muted:#9a9bb5;--cyan:#51f6e1;--pink:#ff58bd;--panel:rgba(13,16,34,.78)}
+*{box-sizing:border-box}html,body{height:100%;margin:0}body{overflow:hidden;background:#070913;color:var(--ink);font-family:'Space Grotesk',sans-serif;user-select:none;-webkit-user-select:none;touch-action:none}
+button{font:inherit;color:inherit}#app{height:100%;min-height:0;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 108%,#241244 0%,#10132a 37%,#070913 75%)}
+#game{position:absolute;inset:0;width:100%;height:100%;display:block}
+.vignette{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(5,7,18,.48),transparent 25%,transparent 68%,rgba(5,7,18,.48));box-shadow:inset 0 0 120px rgba(0,0,0,.4)}
+.topbar{position:absolute;top:max(20px,env(safe-area-inset-top));left:clamp(18px,5vw,68px);right:clamp(18px,5vw,68px);display:flex;align-items:flex-start;justify-content:space-between;z-index:2;pointer-events:none}
+.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:32px;height:32px;border:1px solid rgba(81,246,225,.7);border-radius:50%;display:grid;place-items:center;color:var(--cyan);font-size:16px;box-shadow:0 0 18px rgba(81,246,225,.18)}.brand-copy{font-weight:700;letter-spacing:.14em;font-size:13px}.brand-copy span{display:block;color:#a9abc0;font:10px 'DM Mono',monospace;letter-spacing:.21em;margin-top:3px}
+.hud{display:flex;gap:clamp(14px,3vw,42px);align-items:flex-start}.stat{min-width:52px;text-align:right}.label{font:10px 'DM Mono',monospace;letter-spacing:.18em;color:#898ba7;text-transform:uppercase}.value{font:600 19px 'DM Mono',monospace;letter-spacing:.04em;margin-top:4px}.value.cyan{color:var(--cyan);text-shadow:0 0 14px rgba(81,246,225,.35)}.value.pink{color:var(--pink)}
+.icon-button{pointer-events:auto;border:1px solid rgba(179,185,235,.22);background:rgba(12,15,32,.64);width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:#d9d9ed;cursor:pointer;margin-left:4px;transition:.2s}.icon-button:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-1px)}.icon-button svg{width:16px;height:16px}
+.bottom-hint{position:absolute;bottom:max(24px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);color:#9092ac;font:10px 'DM Mono',monospace;letter-spacing:.17em;text-align:center;white-space:nowrap;z-index:2;pointer-events:none}.keycap{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;border:1px solid rgba(190,194,228,.22);border-radius:5px;color:#dcdeef;margin:0 3px;font-size:10px}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;z-index:3;padding:24px;transition:opacity .3s,visibility .3s}.overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}.card{width:min(440px,100%);text-align:center;padding:clamp(25px,5vw,42px);background:linear-gradient(145deg,rgba(19,23,48,.94),rgba(8,11,26,.88));border:1px solid rgba(151,168,230,.2);border-radius:24px;box-shadow:0 24px 100px rgba(0,0,0,.44),inset 0 1px rgba(255,255,255,.06);backdrop-filter:blur(16px);position:relative;overflow:hidden}.card:before{content:'';position:absolute;top:0;left:20%;width:60%;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.7}.eyebrow{font:10px 'DM Mono',monospace;letter-spacing:.27em;color:var(--cyan);text-transform:uppercase;margin-bottom:15px}.title{font-size:clamp(34px,8vw,52px);line-height:.96;font-weight:700;letter-spacing:-.07em;margin:0}.title .slash{color:var(--pink);text-shadow:0 0 22px rgba(255,88,189,.4)}.subtitle{color:#aaacc3;font-size:14px;line-height:1.55;max-width:330px;margin:17px auto 23px}.rules{display:flex;justify-content:center;gap:22px;margin:18px 0 24px;color:#a3a5bd;font:10px 'DM Mono',monospace;letter-spacing:.07em}.rule-icon{color:var(--cyan);font-size:14px;margin-right:6px}.primary{width:100%;border:0;border-radius:10px;padding:15px 20px;background:linear-gradient(100deg,#49e9d8,#a0f4dc);color:#08121b;font-size:12px;font-weight:700;letter-spacing:.17em;text-transform:uppercase;cursor:pointer;box-shadow:0 7px 28px rgba(54,235,207,.18);transition:transform .18s,filter .18s}.primary:hover{transform:translateY(-2px);filter:brightness(1.08)}.primary:active{transform:translateY(0)}.small-note{font:9px 'DM Mono',monospace;color:#777a98;letter-spacing:.12em;margin-top:15px}.result{font:500 34px 'DM Mono',monospace;color:var(--cyan);margin:18px 0 3px}.result-label{font:10px 'DM Mono',monospace;color:#9294af;letter-spacing:.2em}
+#toast{position:absolute;top:22%;left:50%;transform:translate(-50%,-8px);z-index:2;font:11px 'DM Mono',monospace;letter-spacing:.18em;color:var(--cyan);opacity:0;transition:.22s;text-shadow:0 0 16px currentColor;pointer-events:none}#toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:600px){.topbar{top:max(14px,env(safe-area-inset-top));left:16px;right:16px}.brand{gap:8px}.brand-mark{width:27px;height:27px}.brand-copy{font-size:11px}.brand-copy span{font-size:8px}.hud{gap:13px}.label{font-size:8px}.value{font-size:15px}.stat{min-width:39px}.icon-button{width:34px;height:34px;border-radius:10px;margin-left:0}.bottom-hint{bottom:max(18px,env(safe-area-inset-bottom));font-size:8px;letter-spacing:.1em}.rules{gap:10px;font-size:9px}.card{padding:28px 24px}.subtitle{font-size:13px}}
+@media(max-height:560px){.card{padding:20px 24px}.subtitle{margin:10px auto 14px}.rules{margin:12px 0}.title{font-size:38px}.bottom-hint{bottom:12px}}
+</style>
+</head>
+<body>
+<main id="app">
+<canvas id="game" aria-label="Star Runner game field"></canvas><div class="vignette"></div>
+<header class="topbar">
+  <div class="brand"><div class="brand-mark">✦</div><div class="brand-copy">STAR//RUNNER<span>NEON DRIFT · SECTOR 07</span></div></div>
+  <div class="hud">
+    <div class="stat"><div class="label">Distance</div><div id="score" class="value">00000</div></div>
+    <div class="stat"><div class="label">Best</div><div id="best" class="value cyan">00000</div></div>
+    <div class="stat"><div class="label">Hull</div><div id="lives" class="value pink">♥ ♥ ♥</div></div>
+    <button id="pauseBtn" class="icon-button" aria-label="Pause" title="Pause">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M6 4h3v12H6zM11 4h3v12h-3z"/></svg>
+    </button>
+  </div>
+</header>
+<div id="toast">+ ENERGY</div>
+<div class="bottom-hint"><span class="keycap">←</span><span class="keycap">→</span> STEER <span style="opacity:.45;margin:0 9px">·</span> COLLECT <span style="color:var(--cyan)">◆</span> ENERGY <span style="opacity:.45;margin:0 9px">·</span> A / D ALSO WORK</div>
+<section id="startOverlay" class="overlay">
+  <div class="card">
+    <div class="eyebrow">✦ &nbsp; PILOT, WE NEED YOU &nbsp; ✦</div>
+    <h1 class="title">STAR<span class="slash">//</span>RUNNER</h1>
+    <p class="subtitle">The stars are beautiful. The asteroid field is less forgiving. Drift through the deep, collect energy, and see how far you can fly.</p>
+    <div class="rules"><span><b class="rule-icon">◆</b>COLLECT ENERGY</span><span><b class="rule-icon" style="color:var(--pink)">✕</b>DODGE DEBRIS</span></div>
+    <button id="startBtn" class="primary">Launch mission&nbsp; →</button>
+    <div class="small-note">ARROWS / A D TO STEER &nbsp;·&nbsp; P OR ESC TO PAUSE</div>
+  </div>
+</section>
+<section id="pauseOverlay" class="overlay hidden">
+  <div class="card"><div class="eyebrow">AUTOPILOT ENGAGED</div><h2 class="title">PAUSED<span class="slash">.</span></h2><p class="subtitle">Take a breath, pilot. The stars will wait.</p><button id="resumeBtn" class="primary">Resume flight&nbsp; →</button><div class="small-note">PRESS P OR ESC TO RESUME</div></div>
+</section>
+<section id="overOverlay" class="overlay hidden">
+  <div class="card"><div class="eyebrow">MISSION COMPLETE</div><h2 class="title">NICE RUN<span class="slash">.</span></h2><div id="finalScore" class="result">00000</div><div class="result-label">LIGHT YEARS TRAVELED</div><p id="recordText" class="subtitle" style="margin-bottom:20px">The galaxy remembers.</p><button id="retryBtn" class="primary">Fly again&nbsp; ↻</button><div class="small-note">YOUR NEXT RUN STARTS NOW</div></div>
+</section>
+</main>
+<script>
+(()=>{
+'use strict';
+const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d');
+const $=s=>document.querySelector(s), scoreEl=$('#score'),bestEl=$('#best'),livesEl=$('#lives');
+const startOverlay=$('#startOverlay'),pauseOverlay=$('#pauseOverlay'),overOverlay=$('#overOverlay');
+let W=0,H=0,dpr=1,last=0,elapsed=0,score=0,best=Number(localStorage.getItem('starRunnerBest')||0),lives=3,state='ready',shield=0,shake=0,flash=0,spawnTimer=0,orbTimer=0,toastTimer=0;
+const player={x:0,y:0,r:13,vx:0,invuln:0};
+let obstacles=[],orbs=[],particles=[],stars=[],keys={},pointer=null;
+const rand=(a,b)=>a+Math.random()*(b-a), clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+function resize(){dpr=Math.min(window.devicePixelRatio||1,2);W=canvas.clientWidth;H=canvas.clientHeight;canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);player.y=H*.79;player.x=clamp(player.x||W/2,24,W-24);stars=Array.from({length:Math.max(45,Math.floor(W*H/8500))},()=>({x:Math.random()*W,y:Math.random()*H,z:rand(.25,1),r:rand(.5,1.5),phase:rand(0,7)}))}
+window.addEventListener('resize',resize,{passive:true});resize();
+bestEl.textContent=String(best).padStart(5,'0');
+function setLives(){livesEl.textContent=lives>0?'♥ '.repeat(lives).trim():'—';}
+function showToast(text){const t=$('#toast');t.textContent=text;t.classList.add('show');toastTimer=1.1}
+function burst(x,y,color,n=12){for(let i=0;i<n;i++){let a=rand(0,Math.PI*2),s=rand(30,200);particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:rand(.25,.7),max:.7,color,size:rand(1.5,4)})}}
+function reset(){score=0;elapsed=0;lives=3;shield=0;shake=0;flash=0;spawnTimer=.6;orbTimer=1.6;obstacles=[];orbs=[];particles=[];player.x=W/2;player.y=H*.79;player.vx=0;player.invuln=1.4;scoreEl.textContent='00000';setLives()}
+function start(){reset();state='playing';startOverlay.classList.add('hidden');pauseOverlay.classList.add('hidden');overOverlay.classList.add('hidden');last=performance.now();requestAnimationFrame(loop)}
+function pause(){if(state==='playing'){state='paused';pauseOverlay.classList.remove('hidden')}else if(state==='paused'){state='playing';pauseOverlay.classList.add('hidden');last=performance.now();requestAnimationFrame(loop)}}
+function endGame(){if(state!=='playing')return;state='over';const n=Math.floor(score);$('#finalScore').textContent=String(n).padStart(5,'0');const record=n>best;if(record){best=n;localStorage.setItem('starRunnerBest',best);bestEl.textContent=String(best).padStart(5,'0')}$('#recordText').textContent=record?'NEW FLIGHT RECORD — THE GALAXY IS IMPRESSED.':'The galaxy remembers. Ready for another run?';overOverlay.classList.remove('hidden')}
+function addObstacle(){const r=rand(13,26),x=rand(r+12,W-r-12),speed=rand(155,225)+Math.min(elapsed*3,130);obstacles.push({x,y:-r-10,r,v: speed,rot:rand(0,6.2),spin:rand(-1.5,1.5),sides:Math.floor(rand(7,11)),seed:rand(0,100),hit:false})}
+function addOrb(){orbs.push({x:rand(26,W-26),y:-22,r:9,v:170+Math.min(elapsed*2,110),phase:rand(0,7)})}
+function hitObstacle(o){if(player.invuln>0||o.hit)return;o.hit=true;burst(o.x,o.y,'#ff58bd',18);shake=11;flash=.25;if(shield>0){shield=0;showToast('SHIELD BROKEN');return}lives--;setLives();player.invuln=1.35;if(lives<=0){setTimeout(endGame,180)}}
+function update(dt){elapsed+=dt;score+=dt*(11+Math.min(elapsed*.28,17));scoreEl.textContent=String(Math.floor(score)).padStart(5,'0');if(player.invuln>0)player.invuln-=dt;if(shake>0)shake=Math.max(0,shake-dt*28);if(flash>0)flash-=dt;if(toastTimer>0){toastTimer-=dt;if(toastTimer<=0)$('#toast').classList.remove('show')}
+ let dir=(keys.ArrowRight||keys.d||keys.D?1:0)-(keys.ArrowLeft||keys.a||keys.A?1:0);if(pointer!==null){dir=clamp((pointer-player.x)/45,-1,1)}player.vx+=(dir*W*.92-player.vx)*Math.min(1,dt*7);player.x=clamp(player.x+player.vx*dt,player.r+10,W-player.r-10);player.y=H*.79;
+ spawnTimer-=dt;if(spawnTimer<=0){addObstacle();spawnTimer=Math.max(.31,rand(.72,1.12)-Math.min(elapsed*.008,.34))}orbTimer-=dt;if(orbTimer<=0){addOrb();orbTimer=rand(2,3.2)}
+ const speed=1+Math.min(elapsed*.008,.48);for(const s of stars){s.y+=dt*(24+80*s.z)*speed;if(s.y>H+3){s.y=-3;s.x=Math.random()*W}}
+ for(let i=obstacles.length-1;i>=0;i--){const o=obstacles[i];o.y+=o.v*dt*speed;o.rot+=o.spin*dt;if(o.y>H+o.r+20){obstacles.splice(i,1);continue}let dx=o.x-player.x,dy=o.y-player.y;if(dx*dx+dy*dy<(o.r+player.r*.74)**2)hitObstacle(o)}
+ for(let i=orbs.length-1;i>=0;i--){const o=orbs[i];o.y+=o.v*dt*speed;o.phase+=dt*4;if(o.y>H+30){orbs.splice(i,1);continue}let dx=o.x-player.x,dy=o.y-player.y;if(dx*dx+dy*dy<(o.r+player.r+5)**2){orbs.splice(i,1);score+=125;shield=Math.min(shield+1,1);burst(o.x,o.y,'#51f6e1',16);showToast(shield?'SHIELD CHARGED':'+ ENERGY');}}
+ for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=Math.pow(.08,dt);p.vy*=Math.pow(.08,dt);p.life-=dt;if(p.life<=0)particles.splice(i,1)}
+}
+function polygon(x,y,r,sides,rot,seed){ctx.beginPath();for(let i=0;i<sides;i++){const a=rot+i*Math.PI*2/sides,rr=r*(.78+.22*Math.sin(seed+i*11.7));const px=x+Math.cos(a)*rr,py=y+Math.sin(a)*rr;i?ctx.lineTo(px,py):ctx.moveTo(px,py)}ctx.closePath()}
+function drawShip(){const blink=player.invuln>0&&Math.floor(performance.now()/90)%2===0;if(blink)return;ctx.save();ctx.translate(player.x,player.y);ctx.rotate(clamp(player.vx/(W*.92),-1,1)*.25);if(shield){ctx.strokeStyle='rgba(81,246,225,.8)';ctx.lineWidth=1.4;ctx.shadowBlur=15;ctx.shadowColor='#51f6e1';ctx.beginPath();ctx.arc(0,0,player.r+9+Math.sin(elapsed*7)*2,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0}
+ const flame=rand(13,20);ctx.beginPath();ctx.moveTo(-5,8);ctx.lineTo(0,flame);ctx.lineTo(5,8);ctx.closePath();ctx.fillStyle='#ff58bd';ctx.shadowColor='#ff58bd';ctx.shadowBlur=14;ctx.fill();ctx.shadowBlur=0;
+ ctx.beginPath();ctx.moveTo(0,-17);ctx.lineTo(12,10);ctx.lineTo(0,6);ctx.lineTo(-12,10);ctx.closePath();const g=ctx.createLinearGradient(-10,-16,10,12);g.addColorStop(0,'#eafcff');g.addColorStop(.52,'#51f6e1');g.addColorStop(1,'#5589ff');ctx.fillStyle=g;ctx.shadowColor='#51f6e1';ctx.shadowBlur=20;ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='rgba(255,255,255,.72)';ctx.lineWidth=1;ctx.stroke();ctx.restore()}
+function render(){ctx.clearRect(0,0,W,H);const ox=shake?rand(-shake,shake):0,oy=shake?rand(-shake,shake):0;ctx.save();ctx.translate(ox,oy);
+ // deep-space starfield
+ for(const s of stars){const tw=.45+.55*Math.sin(elapsed*1.6+s.phase);ctx.fillStyle=`rgba(${s.z>.7?'186,220,255':'135,151,204'},${.24+tw*.58})`;ctx.beginPath();ctx.arc(s.x,s.y,s.r*s.z,0,Math.PI*2);ctx.fill()}
+ // faint flowing lanes
+ ctx.strokeStyle='rgba(88,111,190,.075)';ctx.lineWidth=1;for(let i=1;i<5;i++){const x=W*i/5;ctx.beginPath();ctx.moveTo(x,-10);ctx.lineTo(x,H+10);ctx.stroke()}
+ // horizon glow
+ const glow=ctx.createRadialGradient(W/2,H*.45,10,W/2,H*.45,H*.65);glow.addColorStop(0,'rgba(76,45,144,.10)');glow.addColorStop(1,'rgba(76,45,144,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
+ for(const o of obstacles){ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.rot);polygon(0,0,o.r,o.sides,0,o.seed);ctx.fillStyle='#292338';ctx.shadowColor='#ff58bd';ctx.shadowBlur=8;ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='rgba(255,135,202,.65)';ctx.lineWidth=1.3;ctx.stroke();ctx.beginPath();ctx.moveTo(-o.r*.35,-o.r*.15);ctx.lineTo(o.r*.05,-o.r*.43);ctx.lineTo(o.r*.28,-o.r*.21);ctx.strokeStyle='rgba(255,198,226,.27)';ctx.stroke();ctx.restore()}
+ for(const o of orbs){const pulse=1+Math.sin(o.phase)*.18;ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.phase*.18);ctx.shadowColor='#51f6e1';ctx.shadowBlur=17;ctx.strokeStyle='#51f6e1';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(0,-o.r*pulse);ctx.lineTo(o.r*pulse,0);ctx.lineTo(0,o.r*pulse);ctx.lineTo(-o.r*pulse,0);ctx.closePath();ctx.stroke();ctx.fillStyle='rgba(81,246,225,.2)';ctx.fill();ctx.shadowBlur=0;ctx.beginPath();ctx.arc(0,0,2.4,0,Math.PI*2);ctx.fillStyle='#d5fff9';ctx.fill();ctx.restore()}
+ for(const p of particles){ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=8;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0}ctx.globalAlpha=1;
+ if(state==='playing'||state==='paused')drawShip();ctx.restore();if(flash>0){ctx.fillStyle=`rgba(255,88,189,${flash*.35})`;ctx.fillRect(0,0,W,H)}}
+function loop(now){if(state!=='playing')return;const dt=Math.min((now-last)/1000,.034);last=now;update(dt);render();requestAnimationFrame(loop)}
+function idle(now){if(state==='playing')return;let dt=Math.min((now-last)/1000||.016,.034);last=now;if(state==='ready'){elapsed+=dt;for(const s of stars){s.y+=dt*(24+80*s.z);if(s.y>H+2){s.y=-2;s.x=Math.random()*W}}player.x=W/2+Math.sin(now*.0008)*Math.min(W*.18,90);player.y=H*.79}render();requestAnimationFrame(idle)}
+$('#startBtn').addEventListener('click',start);$('#retryBtn').addEventListener('click',start);$('#resumeBtn').addEventListener('click',pause);$('#pauseBtn').addEventListener('click',()=>{if(state==='playing'||state==='paused')pause()});
+window.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight',' ','Escape'].includes(e.key))e.preventDefault();keys[e.key]=true;if((e.key==='p'||e.key==='P'||e.key==='Escape')&&(state==='playing'||state==='paused'))pause();if((e.key==='Enter'||e.key===' ')&&(state==='ready'||state==='over'))start()});window.addEventListener('keyup',e=>{keys[e.key]=false});
+function pointerDown(e){if(state!=='playing')return;pointer=e.clientX;canvas.setPointerCapture?.(e.pointerId)}function pointerMove(e){if(pointer!==null)pointer=e.clientX}function pointerUp(){pointer=null}canvas.addEventListener('pointerdown',pointerDown);canvas.addEventListener('pointermove',pointerMove);window.addEventListener('pointerup',pointerUp);window.addEventListener('blur',()=>{if(state==='playing')pause()});
+setLives();last=performance.now();requestAnimationFrame(idle);
+})();
+</script>
+</body>
+</html>
