@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#101a19">
+  <title>Pixel Eleven — Futebol 2D</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="app">
+    <canvas id="game" aria-label="Campo de futebol"></canvas>
+    <div id="hud" class="hidden">
+      <div class="scoreboard"><span id="homeTag" class="team-tag home-tag">AZU</span><strong id="score">0 — 0</strong><span id="awayTag" class="team-tag away-tag">RUB</span><div id="clock">00:00</div></div>
+      <div class="top-actions"><button id="pauseBtn" class="icon-btn">Ⅱ</button><button id="camBtn" class="icon-btn">CAM 1</button><button id="zoomBtn" class="icon-btn">ZOOM +</button></div>
+      <div id="eventToast"></div>
+      <div id="matchStats" class="stats-pill">POS 50%　CHU 0　FAL 0</div>
+      <div class="touch-controls">
+        <div id="stickZone" class="stick-zone"><div id="stickBase"><div id="stickKnob"></div></div></div>
+        <div class="left-controls"><button data-action="switch" class="control-btn switch">TROCAR</button><button data-action="sprint" class="control-btn sprint">CORRIDA</button></div>
+        <div class="action-controls">
+          <button data-action="lob" class="control-btn lob">LANÇAR</button>
+          <button data-action="tackle" class="control-btn tackle">CARRINHO</button>
+          <button data-action="pass" class="control-btn pass">PASSE</button>
+          <button data-action="shoot" class="control-btn shoot">CHUTE</button>
+        </div>
+      </div>
+      <div id="pausePanel" class="overlay hidden"><section class="panel pause-panel"><div class="eyebrow">PIXEL ELEVEN • INTERVALO</div><h2>Partida pausada</h2><p id="pauseDetail">AZURE FC 0 — 0 RUBRO SC</p><div class="panel-buttons"><button id="resumeBtn" class="primary">CONTINUAR</button><button id="formationBtn">FORMAÇÃO</button><button id="statsBtn">ESTATÍSTICAS</button><button id="quitBtn" class="danger">SAIR DA PARTIDA</button></div><div id="pauseExtra"></div></section></div>
+      <div id="matchEnd" class="overlay hidden"><section class="panel"><div class="eyebrow">APITO FINAL</div><h2 id="finalTitle">Fim de jogo</h2><p id="finalSummary"></p><button id="continueBtn" class="primary">CONTINUAR</button></section></div>
+    </div>
+    <div id="menu" class="menu-screen">
+      <div class="menu-top"><div class="brand-mark">PE<span>11</span></div><div class="top-label">PIXEL ELEVEN <small>ARCADE FOOTBALL • 2D</small></div><button id="soundToggle" class="sound-toggle">♪ ÁUDIO: ON</button></div>
+      <div class="menu-content">
+        <div class="hero-copy"><div class="eyebrow">TEMPORADA 1999 / 2000</div><h1>O jogo<br><em>é seu.</em></h1><p>Futebol de rua, estádio cheio e aquele último passe que muda tudo.</p><div class="hero-meta"><span>▰ 22 JOGADORES</span><span>▰ 90 MINUTOS</span><span>▰ 16-BIT FEEL</span></div></div>
+        <div class="menu-board"><div class="board-header"><span>MENU PRINCIPAL</span><span class="online-dot">● PRONTO PARA JOGAR</span></div><div class="mode-grid">
+          <button class="mode-card featured" data-mode="quick"><span class="mode-icon">⚽</span><span><b>PARTIDA RÁPIDA</b><small>Entre em campo agora</small></span><i>↗</i></button>
+          <button class="mode-card" data-mode="cup"><span class="mode-icon">♜</span><span><b>TAÇA PIXEL</b><small>Copa eliminatória • 4 equipes</small></span><i>↗</i></button>
+          <button class="mode-card" data-mode="master"><span class="mode-icon">◆</span><span><b>MASTER LEAGUE</b><small>Monte seu elenco e evolua</small></span><i>↗</i></button>
+          <button class="mode-card" data-mode="career"><span class="mode-icon">★</span><span><b>CARREIRA DE JOGADOR</b><small>Comece sua história</small></span><i>↗</i></button>
+          <button class="mode-card" data-mode="training"><span class="mode-icon">◉</span><span><b>TREINAMENTO</b><small>Pratique passes e finalizações</small></span><i>↗</i></button>
+        </div><div class="board-footer"><button id="teamsBtn">✎　EQUIPES & JOGADORES</button><button id="optionsBtn">⚙　OPÇÕES</button><span>PROGRESSO SALVO AUTOMATICAMENTE</span></div></div>
+      </div>
+      <div class="menu-bottom"><span>© PIXEL ELEVEN • UMA HOMENAGEM AO FUTEBOL ARCADE</span><span>ANDROID READY　/　LANDSCAPE RECOMMENDED</span></div>
+    </div>
+    <div id="setup" class="overlay hidden"><section class="panel setup-panel"><button class="close-btn" data-close>×</button><div class="eyebrow" id="setupEyebrow">ANTES DO APITO</div><h2 id="setupTitle">Escalações</h2><div id="setupBody"></div><div class="setup-actions"><button data-close>VOLTAR</button><button id="startMatch" class="primary">COMEÇAR PARTIDA　→</button></div></section></div>
+    <div id="editor" class="overlay hidden"><section class="panel editor-panel"><button class="close-btn" data-close>×</button><div class="eyebrow">CENTRAL DE EDIÇÃO</div><h2>Equipes & jogadores</h2><div id="editorBody"></div><button data-close>CONCLUIR</button></section></div>
+    <div id="options" class="overlay hidden"><section class="panel"><button class="close-btn" data-close>×</button><div class="eyebrow">PREFERÊNCIAS</div><h2>Opções do jogo</h2><div class="option-row"><span>Câmera</span><select id="cameraSelect"><option value="0">Aérea inclinada</option><option value="1">TV lateral</option><option value="2">Dinâmica próxima</option></select></div><div class="option-row"><span>Zoom</span><input id="zoomRange" type="range" min="75" max="125" value="100"></div><div class="option-row"><span>Duração da partida</span><select id="durationSelect"><option value="180">Rápida • 3 min</option><option value="300" selected>Normal • 5 min</option><option value="600">Completa • 10 min</option></select></div><div class="option-row"><span>Narração</span><button id="commentaryToggle">LIGADA</button></div><button data-close class="primary">SALVAR</button></section></div>
+    <div id="toast" class="global-toast"></div>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
